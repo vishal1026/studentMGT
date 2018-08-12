@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "/home/vishal/lh/studentMGT/PUCSD_LiveHealth"
+		}
+	],
+	"settings": {
+		"python.pythonPath": "~/lh/djangoENV/bin/python"
+    },
+    "python.linting.pylintEnabled": false
+}
