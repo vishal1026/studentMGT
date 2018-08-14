@@ -86,10 +86,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME':'studentmgt',
-        'USER':'livehealth',
-        'PASSWORD':'live_health',
-        'HOST':'127.0.0.1',
-        'PORT':'3306',
+        'USER':'root',
+        'PASSWORD':'ps',
+        'HOST':'localhost',
+        'PORT':'',
     }
 }
 
