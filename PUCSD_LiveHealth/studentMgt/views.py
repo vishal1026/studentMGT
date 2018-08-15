@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from models import *
 from django.http import HttpResponse
+from decorators import *
 
 @api_view(['GET'])
 @authentication_classes(())
@@ -107,6 +108,7 @@ def login(request):
     except School_user.DoesNotExist:
         return HttpResponse("Your username and password didn't match.")
 
+@checkParent
 def sessionValues(request):
     print (1+1)
     return HttpResponse("Success in session values")
@@ -137,4 +139,4 @@ def createStudent(request):
         return HttpResponse("Pass")
 
     except:
-        return HttpResponse("Failed")
+        return HttpResponse("Failed")   

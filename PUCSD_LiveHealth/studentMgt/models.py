@@ -87,7 +87,7 @@ class Student_in_class(models.Model):
 
 class Exam(models.Model):
 	exam_id = models.AutoField(primary_key=True)
-	exam_name = models.CharField(max_length=20, null = False) 
+	exam_name = models.CharField(max_length=20) 
 	date = models.DateTimeField()
 	subject_id = models.ForeignKey(Subject, related_name = 'exam')
 
