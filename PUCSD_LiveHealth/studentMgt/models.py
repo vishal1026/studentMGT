@@ -4,17 +4,17 @@ from __future__ import unicode_literals
 from django.db import models
 
 class School_user(models.Model):
-	user_id = models.IntegerField (primary_key = True)
+	user_id = models.AutoField(primary_key=True)
 	user_name = models.CharField(max_length=70)
 	password = models.CharField(max_length=70)
 	is_active = models.BooleanField()
 	user_type = models.IntegerField(null=False)
-
+	
 	class Meta:
 		db_table = 'school_user'
 
 class Parent(models.Model):	
-	parent_id = models.IntegerField(primary_key=True, editable=False)
+	parent_id = models.AutoField(primary_key=True)
 	user_id = models.ForeignKey(School_user, related_name = 'parent')
 	fname = models.CharField(max_length=30, null = False)
 	lname = models.CharField(max_length=30, null = False)
@@ -24,7 +24,7 @@ class Parent(models.Model):
 		db_table='parent'
 
 class Student(models.Model):
-	student_id = models.IntegerField(primary_key=True, editable=False)
+	student_id = models.AutoField(primary_key=True)
 	user_id = models.ForeignKey(School_user, related_name='student')
 	fname = models.CharField(max_length=30)
 	lname = models.CharField(max_length=30)
@@ -34,7 +34,7 @@ class Student(models.Model):
 		db_table='student'
 
 class Teacher(models.Model):
-	teacher_id = models.IntegerField(primary_key=True, editable=False)
+	teacher_id = models.AutoField(primary_key=True)
 	user_id = models.ForeignKey(School_user, related_name='teacher')
 	fname = models.CharField(max_length=30)
 	lname = models.CharField(max_length=30)
@@ -44,14 +44,14 @@ class Teacher(models.Model):
 		db_table = 'teacher'
 
 class Department(models.Model):
-	department_id = models.IntegerField(primary_key=True, editable=False)
+	department_id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=30)
 
 	class Meta:
 		db_table = 'department'
 
 class Course(models.Model):
-	course_id = models.IntegerField(primary_key=True, editable=False)
+	course_id = models.AutoField(primary_key=True)
 	course_name = models.CharField(max_length=30)
 	department_id = models.ForeignKey(Department, related_name = 'course')
  
@@ -59,7 +59,7 @@ class Course(models.Model):
 		db_table = 'course'
 
 class Course_Class(models.Model):
-	class_id = models.IntegerField(primary_key=True, editable=False)
+	class_id = models.AutoField(primary_key=True)
 	course_id = models.ForeignKey(Course, related_name = 'course')
 	teacher_id = models.ForeignKey(Teacher, related_name = 'course_class')
 	strength = models.IntegerField(null=False)
@@ -68,7 +68,7 @@ class Course_Class(models.Model):
 		db_table = 'couse_class'
 
 class Subject(models.Model):
-	subject_id = models.IntegerField(primary_key=True, editable=False)
+	subject_id = models.AutoField(primary_key=True)
 	subject_name = models.CharField(max_length=30)
 	class_id = models.ForeignKey(Course_Class, related_name = 'subject')
 	teacher_id = models.ForeignKey(Teacher, related_name = 'subject')
@@ -77,7 +77,7 @@ class Subject(models.Model):
 		db_table = 'subject'
 
 class Student_in_class(models.Model):
-	student_class_id = models.IntegerField(primary_key=True, editable=False)
+	student_class_id = models.AutoField(primary_key=True)
 	roll_no = models.IntegerField(null=False)
 	class_id = models.ForeignKey(Course_Class, related_name = 'student_in_class')
 	student_id = models.ForeignKey(Student, related_name = 'student_in_class')
@@ -86,8 +86,8 @@ class Student_in_class(models.Model):
 		db_table = 'student_in_class'
 
 class Exam(models.Model):
-	exam_id = models.IntegerField(primary_key=True, editable=False)
-	exam_name = models.CharField(null = False) 
+	exam_id = models.AutoField(primary_key=True)
+	exam_name = models.CharField(max_length=20, null = False) 
 	date = models.DateTimeField()
 	subject_id = models.ForeignKey(Subject, related_name = 'exam')
 
@@ -104,7 +104,7 @@ class Marks(models.Model):
 		db_table = 'marks'
 
 class Attendance(models.Model):
-	attendance_id = models.IntegerField(primary_key=True, editable=False)
+	attendance_id = models.AutoField(primary_key=True)
 	date = models.DateField()
 	class_id = models.ForeignKey(Course_Class, related_name = 'attendance')
 	attendance_data = models.TextField( null = False )

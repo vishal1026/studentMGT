@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-
+from studentMgt.views import *
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^loginForm/', renderlogin),
+    url(r'^login/', login),
+    url(r'^createStudent/', createStudent),
+    url(r'^logout/', logout),
+    url(r'^sessionValues/',sessionValues),
+
 ]
