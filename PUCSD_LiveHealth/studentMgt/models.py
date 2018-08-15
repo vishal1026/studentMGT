@@ -87,7 +87,8 @@ class Student_in_class(models.Model):
 
 class Exam(models.Model):
 	exam_id = models.IntegerField(primary_key=True, editable=False)
-	date = models.DateField()
+	exam_name = models.CharField(null = False) 
+	date = models.DateTimeField()
 	subject_id = models.ForeignKey(Subject, related_name = 'exam')
 
 	class Meta:
