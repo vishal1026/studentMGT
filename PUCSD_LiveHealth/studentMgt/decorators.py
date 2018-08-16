@@ -33,7 +33,7 @@ def checkTeacher(function):
 
 def checkAdmin(function):
     def wrap(request, *args, **kwargs):
-        if request.session['user_type'] == 4:
+        if request.session['user_type'] == 5:
             return function(request, *args, **kwargs)
         else:
             raise PermissionDenied
@@ -41,9 +41,9 @@ def checkAdmin(function):
     wrap.__name__ = function.__name__
     return wrap
 
-def checkSuperUser(function):
+def checkClassTeacher(function):
     def wrap(request, *args, **kwargs):
-        if request.session['user_type'] == 5:
+        if request.session['user_type'] == 4:
             return function(request, *args, **kwargs)
         else:
             raise PermissionDenied

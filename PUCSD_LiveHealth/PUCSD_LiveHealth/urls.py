@@ -18,10 +18,11 @@ from django.contrib import admin
 from studentMgt.views import *
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^loginForm/', renderlogin),
-    url(r'^login/', login),
+    url(r'^login/', renderlogin),
+    url(r'^dashboard/', login),
     url(r'^createStudent/', createStudent),
     url(r'^logout/', logout),
+    url(r'^foo/', foo),
     url(r'^sessionValues/',sessionValues),
 
 ]
