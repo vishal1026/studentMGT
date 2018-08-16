@@ -26,6 +26,7 @@ class Parent(models.Model):
 class Student(models.Model):
 	student_id = models.AutoField(primary_key=True)
 	user_id = models.ForeignKey(School_user, related_name='student')
+	parent_id = models.ForeignKey(Parent, related_name='student')
 	fname = models.CharField(max_length=30)
 	lname = models.CharField(max_length=30)
 	contact = models.DecimalField(max_digits=10, decimal_places=0 )

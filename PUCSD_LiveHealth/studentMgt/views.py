@@ -18,7 +18,21 @@ def renderlogin(request):
     return Response(template_name='login.html')
 
 
+@checkAdmin
+@api_view(['GET'])
+@authentication_classes(())
+@renderer_classes((JSONRenderer,))
+@permission_classes(())
+def foo(request):
+    data= {'rfg':'acs'}
+    return Response(data)
+
+
 @csrf_exempt
+@api_view(['POST','GET'])
+@authentication_classes(())
+@renderer_classes((TemplateHTMLRenderer,))
+@permission_classes(())
 def login(request):
     if request.method != 'POST':
         raise Http404('Only POSTs are allowed')
@@ -29,7 +43,7 @@ def login(request):
             request.session['user_name'] = m.user_name
             request.session['user_type'] = m.user_type
             # return HttpResponseRedirect('/you-are-logged-in/')
-            if m.user_type==1:
+            if m.user_type==1: #Student Type
                 details = Student.objects.get(user_id=m.user_id)
                 request.session['stud_fname'] = details.fname
                 request.session['stud_lname'] = details.lname
@@ -43,7 +57,7 @@ def login(request):
                 request.session['teacher_fname'] = None
                 request.session['teacher_lname'] = None
                 request.session['teacher_contact'] = None
-            
+                return Response(template_name='student_index.html')
             elif m.user_type==2:
                 details = Parent.objects.get(user_id=m.user_id)
                 request.session['stud_fname'] = None
@@ -58,55 +72,58 @@ def login(request):
                 request.session['teacher_fname'] = None
                 request.session['teacher_lname'] = None
                 request.session['teacher_contact'] = None
-            
-            elif m.user_type==2:
-                details = Parent.objects.get(user_id=m.user_id)
+                return Response(template_name='parent_index.html')
+                     
+            elif m.user_type==3: #teacher type
+                details = Teacher.objects.get(user_id=m.user_id)
                 request.session['stud_fname'] = None
                 request.session['stud_lname'] = None
                 request.session['stud_contact'] = None
                 request.session['stud_id'] = None
-                request.session['parent_id'] = details.parent_id
-                request.session['parent_fname'] = details.fname
-                request.session['parent_lname'] = details.lname
-                request.session['parent_contact'] = details.contact
+                request.session['parent_id'] = None
+                request.session['parent_fname'] = None
+                request.session['parent_lname'] = None
+                request.session['parent_contact'] = None
+                request.session['teacher_id'] = details.teacher_id
+                request.session['teacher_fname'] = details.fname
+                request.session['teacher_lname'] = details.lname
+                request.session['teacher_contact'] = details.contact
+                return Response(template_name='teacher_index.html')
+            elif m.user_type==4: #class teacher type
+                details = Teacher.objects.get(user_id=m.user_id)
+                request.session['stud_fname'] = None
+                request.session['stud_lname'] = None
+                request.session['stud_contact'] = None
+                request.session['stud_id'] = None
+                request.session['parent_id'] = None
+                request.session['parent_fname'] = None
+                request.session['parent_lname'] = None
+                request.session['parent_contact'] = None
+                request.session['teacher_id'] = details.teacher_id
+                request.session['teacher_fname'] = details.fname
+                request.session['teacher_lname'] = details.lname
+                request.session['teacher_contact'] = details.contact
+                return Response(template_name='class_teacher_index.html')
+
+            elif m.user_type==5: #admin type
+                
+                request.session['stud_fname'] = None
+                request.session['stud_lname'] = None
+                request.session['stud_contact'] = None
+                request.session['stud_id'] = None
+                request.session['parent_id'] = None
+                request.session['parent_fname'] = None
+                request.session['parent_lname'] = None
+                request.session['parent_contact'] = None
                 request.session['teacher_id'] = None
                 request.session['teacher_fname'] = None
                 request.session['teacher_lname'] = None
                 request.session['teacher_contact'] = None
+                return Response(template_name='admin_index.html')
+
             
-            elif m.user_type==3:
-                details = Teacher.objects.get(user_id=m.user_id)
-                request.session['stud_fname'] = None
-                request.session['stud_lname'] = None
-                request.session['stud_contact'] = None
-                request.session['stud_id'] = None
-                request.session['parent_id'] = None
-                request.session['parent_fname'] = None
-                request.session['parent_lname'] = None
-                request.session['parent_contact'] = None
-                request.session['teacher_id'] = details.teacher_id
-                request.session['teacher_fname'] = details.fname
-                request.session['teacher_lname'] = details.lname
-                request.session['teacher_contact'] = details.contact
-            
-            elif m.user_type==4:
-                details = Teacher.objects.get(user_id=m.user_id)
-                request.session['stud_fname'] = None
-                request.session['stud_lname'] = None
-                request.session['stud_contact'] = None
-                request.session['stud_id'] = None
-                request.session['parent_id'] = None
-                request.session['parent_fname'] = None
-                request.session['parent_lname'] = None
-                request.session['parent_contact'] = None
-                request.session['teacher_id'] = details.teacher_id
-                request.session['teacher_fname'] = details.fname
-                request.session['teacher_lname'] = details.lname
-                request.session['teacher_contact'] = details.contact
-           
-            return HttpResponse("Success")
     except School_user.DoesNotExist:
-        return HttpResponse("Your username and password didn't match.")
+        return Response(template_name='login.html')
 
 @checkParent
 def sessionValues(request):
