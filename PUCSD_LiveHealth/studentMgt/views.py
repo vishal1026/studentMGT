@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from rest_framework.decorators import *
 from rest_framework.response import Response
@@ -156,4 +155,42 @@ def createStudent(request):
         return HttpResponse("Pass")
 
     except:
-        return HttpResponse("Failed")   
+        return HttpResponse("Failed")
+
+class EmployeeList(APIView):
+	def get(self,request):
+		employees1=Employees.objects.all()
+		serializer=EmployeesSerializer(employees1, many=True)
+
+		print "--------------------------------Print Database Direct------------------------------------"
+		print employees1
+		print "--------------------------------Print Database In json------------------------------------"
+		print serializer.data
+		return Response(serializer.data)
+
+@api_view(['POST'])
+@authentication_classes(())
+@renderer_classes((TemplateHTMLRenderer,))
+@permission_classes(())
+def admin_panel(request):
+    return Response(template_name='admin_index.html')
+
+@api_view(['POST'])
+def insert_department(request):
+    print request
+    print "--------------------------------------"
+    dept=Department()
+    dept.name=request.POST['name']
+    dept.save()
+    return Response(request.dept)
+
+@api_view(['POST'])
+def insert_course(request):
+    print request
+    print "--------------------------------------"
+    course=Course()
+    course.course_name=request.POST['course_name']
+    course.department_id=request.POST['department_id']
+    course.save()
+    return Response(request.course)
+
