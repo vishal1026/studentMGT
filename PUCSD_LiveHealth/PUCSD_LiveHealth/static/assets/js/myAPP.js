@@ -27,19 +27,40 @@ $.ajaxSetup({
     }
 });
 */
+var data={};
+var globalDepartmentData;
 $.ajax({
 type:'GET',
     url:"http://localhost:8000/department_list_table/ ",
     success:function(msg){
         console.log(msg)
+        globalDepartmentData=msg;
         genTable(msg);
     }
     });
 
-var data={};
+
+function addCourse(){
+var courseName = document.getElementById('course').value;
+var deptID = document.getElementById('deptList').value;
+
+$.ajax({
+    type:'POST',
+        url:"http://localhost:8000/add_entry_in_course/ ",
+        data:{
+            'courseName' : courseName,
+            'deptID' : deptID
+        },
+        success:function(deptList){
+            console.log(deptList)
+            
+        }
+});
+}
+
+
 function genTable(msg){
     data=msg;
-
 
     var table = $('<table class="table table-striped" id="department_display_table">');
      //Get the count of columns.
@@ -80,4 +101,17 @@ function addDepartment(){
                 console.log(deptList)
             }
             });        
+}
+
+function addOption(elt,val){
+    var select = document.getElementById("deptList");
+    select.options[select.options.length] = new Option(elt,val,false, false);
+}
+
+function deptSelMenu(){
+    $('#deptList').empty();
+    cnt = globalDepartmentData.length;
+    for(var i = 0; i < cnt; i++ ){
+        addOption(globalDepartmentData[i].name, globalDepartmentData[i].department_id);
+    }
 }

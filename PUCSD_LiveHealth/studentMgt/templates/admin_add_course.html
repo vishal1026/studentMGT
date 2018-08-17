@@ -41,7 +41,7 @@
 <body>
 
     <div id="wrapper">
-
+        <input type="hidden" id="user" value="{{ request.session.user_name}}">
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -107,9 +107,57 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form action="add_Course" method="POST">
+                
+                            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" onclick="deptSelMenu()">Add Course</button>
+                    </form>
+                </div>
+                <div class="col-lg-12">
+                    <div class="panel-heading">
+                        <h4>Course List</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="course_display_table">
+
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
         </div>
     </div>
 
+    <!-- Modal Code -->
+    <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-md">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Course Creation</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group ">
+                        <input type="text" id="course" placeholder="Enter Course Name" >
+                    </div>    
+                <div class="form-group">
+                    <select class="form-control" id="deptList">
+                        <option value="0"> Select Department</option>
+                    </select>
+                </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-left" id="addCourseBtn" onclick="addCourse()" > Submit </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+        </div>
+        
     <!-- jQuery -->
     <script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 
