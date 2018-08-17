@@ -24,5 +24,8 @@ urlpatterns = [
     url(r'^logout/', logout),
     url(r'^foo/', foo),
     url(r'^sessionValues/',sessionValues),
+    url(r'^admin_index/',admin_panel),
+    url(r'^insert_department/',insert_department),
+    url(r'^insert_course/',insert_course),
 
 ]
