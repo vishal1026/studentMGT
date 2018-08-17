@@ -18,10 +18,15 @@ from django.contrib import admin
 from studentMgt.views import *
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^loginForm/', renderlogin),
-    url(r'^login/', login),
+    url(r'^login/', renderlogin),
+    url(r'^dashboard/', login),
     url(r'^createStudent/', createStudent),
-    url(r'^logout/', logout),
+    url(r'^logout/', logout_view),
+    url(r'^add_entry_in_department/', add_entry_in_department ),
+    url(r'^department_list_table/', department_list_table),
+    url(r'^render_add_department/', render_add_department),
+    url(r'^add_course/', add_course),
+    # url(r'^/create_exam', create_exam),
     url(r'^sessionValues/',sessionValues),
 
 ]

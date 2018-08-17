@@ -5,9 +5,9 @@ from django.db import models
 
 class School_user(models.Model):
 	user_id = models.AutoField(primary_key=True)
-	user_name = models.CharField(max_length=70)
+	user_name = models.CharField(max_length=70, unique = True)
 	password = models.CharField(max_length=70)
-	is_active = models.BooleanField()
+	is_active = models.BooleanField( default = True )
 	user_type = models.IntegerField(null=False)
 	
 	class Meta:
@@ -22,12 +22,13 @@ class Parent(models.Model):
 
 	class Meta:
 		db_table='parent'
-
+	
 class Student(models.Model):
 	student_id = models.AutoField(primary_key=True)
 	user_id = models.ForeignKey(School_user, related_name='student')
-	fname = models.CharField(max_length=30)
-	lname = models.CharField(max_length=30)
+	parent_id = models.ForeignKey(Parent, related_name='student')
+	fname = models.CharField(max_length=30, null= False)
+	lname = models.CharField(max_length=30, null=False)
 	contact = models.DecimalField(max_digits=10, decimal_places=0 )
 
 	class Meta:
@@ -36,8 +37,8 @@ class Student(models.Model):
 class Teacher(models.Model):
 	teacher_id = models.AutoField(primary_key=True)
 	user_id = models.ForeignKey(School_user, related_name='teacher')
-	fname = models.CharField(max_length=30)
-	lname = models.CharField(max_length=30)
+	fname = models.CharField(max_length=30, null= False)
+	lname = models.CharField(max_length=30, null= False)
 	contact = models.DecimalField(max_digits=10, decimal_places=0)
 
 	class Meta:
@@ -45,14 +46,14 @@ class Teacher(models.Model):
 
 class Department(models.Model):
 	department_id = models.AutoField(primary_key=True)
-	name = models.CharField(max_length=30)
+	name = models.CharField(max_length=30, null=False, unique = True)
 
 	class Meta:
 		db_table = 'department'
 
 class Course(models.Model):
 	course_id = models.AutoField(primary_key=True)
-	course_name = models.CharField(max_length=30)
+	course_name = models.CharField(max_length=30,null=False, unique=True)
 	department_id = models.ForeignKey(Department, related_name = 'course')
  
 	class Meta:
@@ -61,7 +62,7 @@ class Course(models.Model):
 class Course_Class(models.Model):
 	class_id = models.AutoField(primary_key=True)
 	course_id = models.ForeignKey(Course, related_name = 'course')
-	teacher_id = models.ForeignKey(Teacher, related_name = 'course_class')
+	teacher_id = models.ForeignKey(Teacher, null=False,  related_name = 'course_class')
 	strength = models.IntegerField(null=False)
 
 	class Meta:
@@ -69,7 +70,7 @@ class Course_Class(models.Model):
 
 class Subject(models.Model):
 	subject_id = models.AutoField(primary_key=True)
-	subject_name = models.CharField(max_length=30)
+	subject_name = models.CharField(max_length=30,null=False)
 	class_id = models.ForeignKey(Course_Class, related_name = 'subject')
 	teacher_id = models.ForeignKey(Teacher, related_name = 'subject')
 
@@ -87,9 +88,9 @@ class Student_in_class(models.Model):
 
 class Exam(models.Model):
 	exam_id = models.AutoField(primary_key=True)
-	exam_name = models.CharField(max_length=20) 
-	date = models.DateTimeField()
-	subject_id = models.ForeignKey(Subject, related_name = 'exam')
+	exam_name = models.CharField(null=False,max_length=20) 
+	date = models.DateTimeField(null=False)
+	subject_id = models.ForeignKey(Subject, null=False, related_name = 'exam')
 
 	class Meta:
 		db_table = 'exam'
@@ -105,7 +106,7 @@ class Marks(models.Model):
 
 class Attendance(models.Model):
 	attendance_id = models.AutoField(primary_key=True)
-	date = models.DateField()
+	date = models.DateField(null=False)
 	class_id = models.ForeignKey(Course_Class, related_name = 'attendance')
 	attendance_data = models.TextField( null = False )
 
