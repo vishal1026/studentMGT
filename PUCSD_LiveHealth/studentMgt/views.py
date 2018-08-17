@@ -4,11 +4,24 @@ from rest_framework.decorators import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer,JSONRenderer
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render,HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+
 from models import *
 from django.http import HttpResponse
 from decorators import *
+from django.contrib.auth import logout
+from serializers import *
+
+@checkAdmin
+@csrf_exempt
+@api_view(['GET'])
+@authentication_classes(())
+@renderer_classes((TemplateHTMLRenderer,))
+@permission_classes(())
+def add_course(request):
+    return Response(template_name='admin_add_course.html')
+
 
 @api_view(['GET'])
 @authentication_classes(())
@@ -27,9 +40,39 @@ def foo(request):
     data= {'rfg':'acs'}
     return Response(data)
 
+@checkAdmin
+@api_view(['GET','POST'])
+@renderer_classes((TemplateHTMLRenderer,))
+def render_add_department(request):
+    return Response(template_name='admin_add_department.html')
 
+
+
+@checkAdmin
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,))
+def department_list_table(request):
+    department_obj = Department.objects.all()
+    department_list = departmentSerializer(department_obj, many=True)
+    print department_list.data
+    return Response(department_list.data)
+
+
+
+@checkAdmin
 @csrf_exempt
-@api_view(['POST','GET'])
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def add_entry_in_department(request):
+    department_obj = Department()
+    department_obj.name = request.data['deptName']
+    department_obj.save()
+    dept = departmentSerializer(department_obj, many=False)
+    return Response(dept.data)
+
+
+
+@api_view(['POST'])
 @authentication_classes(())
 @renderer_classes((TemplateHTMLRenderer,))
 @permission_classes(())
@@ -39,6 +82,7 @@ def login(request):
     try:
         m = School_user.objects.get(user_name=request.POST['username'])
         if m.password == request.POST['password']:
+            #request.session.set_expiry(300) 
             request.session['user_id'] = m.user_id
             request.session['user_name'] = m.user_name
             request.session['user_type'] = m.user_type
@@ -129,15 +173,13 @@ def login(request):
 def sessionValues(request):
     print (1+1)
     return HttpResponse("Success in session values")
-def logout(request):
-    try:
-        del request.session['user_id']
-    except KeyError:
-        pass
-    return HttpResponse("You're logged out.")
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/login/')
 
 @csrf_exempt
-
 def createStudent(request):
     try:
         studentId = request.POST["studentId"]
