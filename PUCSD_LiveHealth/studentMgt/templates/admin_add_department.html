@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    
     {% load staticfiles %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Admin Dashboard</title>
+    <title>Add Department</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'assets/bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -75,23 +76,23 @@
                             
                             <!-- /input-group -->
                         </li>
-                        <li class="active">
-                            <a href="#"> Dashboard </a>
+                        <li>
+                            <a href="/dashboard/"> Dashboard </a>
                         </li>
                         <li>
-                            <a href="#"> Student Registration </a>
+                            <a href="/student_registration/"> Student Registration </a>
                         </li>
                         <li>
-                            <a href="#"> Teacher Registration </a>
+                            <a href="/teacher_registration/"> Teacher Registration </a>
                         </li>
                         <li>
-                            <a href="#"> Add  Department  </a>
+                            <a href="/render_add_department/"> Add  Department  </a>
                         </li>
                         <li>
-                            <a href="#"> Add Course </a>
+                            <a href="/add_course/"> Add Course </a>
                         </li>
                         <li>
-                            <a href="#"> Create Exam </a>
+                            <a href="/create_exam/"> Create Exam </a>
                         </li>
                     </ul>
                 </div>
@@ -103,10 +104,33 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+                    <h1 class="page-header">Add Department</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form action="add_department" method="POST">
+                        <input type="text" id="deptName" placeholder="Enter Name Of Department">
+                        <button type="submit" class="btn btn-primary" id="departmentAddButton" onclick="addDepartment();">Add</button>
+                    </form>
+                </div>
+                <div class="col-lg-12">
+                    <div class="panel-heading">
+                        <h4>Departments List</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="department_display_table">
+
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+
         </div>
     </div>
 
@@ -127,6 +151,7 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'assets/dist/js/sb-admin-2.js' %}"></script>
+    
 
 </body>
 
