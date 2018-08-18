@@ -28,5 +28,5 @@ urlpatterns = [
     url(r'^add_course/', add_course),
     url(r'^add_entry_in_course/', add_entry_in_course),
     url(r'^sessionValues/',sessionValues),
-
+    url(r'^course_list/', course_list),
 ]
