@@ -6,12 +6,13 @@ from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer,JSONRenderer
 from django.shortcuts import render,HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-
+from django.utils.crypto import get_random_string
 from models import *
 from django.http import HttpResponse
 from decorators import *
 from django.contrib.auth import logout
 from serializers import *
+from random import randint
 
 @checkAdmin
 @csrf_exempt
@@ -31,9 +32,22 @@ def add_entry_in_course(request):
     courseObj = Course()
     deptId = Department.objects.get(department_id = request.data['deptID'])
     courseObj.course_name = request.data['courseName']
+    courseYears = int(request.data['courseYears'])
+    courseObj.noOfYears = courseYears
     courseObj.department_id = deptId 
     courseObj.save()
     courseSer = courseSerializer(courseObj, many=False)
+    cntTeachers= Teacher.objects.all().count()
+    teacherObjs = Teacher.objects.all()
+
+    for i in range(1,courseYears+1):
+        j = randint(1,cntTeachers-1)
+        ccObj = Course_Class()
+        ccObj.course_id = courseObj
+        ccObj.teacher_id = teacherObjs[j]
+        ccObj.yearOfCourse = i
+        ccObj.save()
+
     return Response(courseSer.data)
 
 
@@ -206,23 +220,106 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect('/login/')
 
+@checkAdmin
 @csrf_exempt
-def createStudent(request):
-    try:
-        studentId = request.POST["studentId"]
-        fname = request.POST["fname"] 
-        lname = request.POST["lname"]
-        contact = request.POST["contact"]
+@api_view(['GET'])
+@authentication_classes(())
+@renderer_classes((TemplateHTMLRenderer,))
+@permission_classes(())
+def teacher_registration(request):
+    return Response(template_name='admin_teacher_registration.html')
 
-        studInstance = School_user.objects.get(user_id=int(studentId))
-        stud = Student()
-        stud.student_id = 1
-        stud.user_id = studInstance
-        stud.fname = fname
-        stud.lname = lname
-        stud.contact = contact
-        stud.save()
-        return HttpResponse("Pass")
+@checkAdmin
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes(())
+@renderer_classes((JSONRenderer,))
+@permission_classes(())
+def addTeacher(request):
+    isExist=0
+    isExist=School_user.objects.filter(user_name=request.data['teacherEmail']).count()
+    if isExist==0:
+        userObj = School_user()
+        userObj.user_name = request.data['teacherEmail']
+        userObj.password = unique_id = get_random_string(length=5)
+        userObj.is_active = True
+        userObj.user_type = 3
+        userObj.save()
+        teacherUser = Teacher()
+        teacherUser.user_id = userObj
+        teacherUser.fname = request.data['teacherFName']
+        teacherUser.lname = request.data['teacherLName']        
+        teacherUser.contact = request.data['teacherContact']
+        teacherUser.save()
+    return Response({"Status":"Done"})
 
-    except:
-        return HttpResponse("Failed")   
+@checkAdmin
+@csrf_exempt
+@api_view(['GET'])
+@authentication_classes(())
+@renderer_classes((TemplateHTMLRenderer,))
+@permission_classes(())
+def student_registration(request):
+    return Response(template_name='admin_register_student.html')
+
+
+def studReg(request,parentObj):
+    userObjS = School_user()
+    userObjS.user_name = request.data['studentEmail']
+    userObjS.password = unique_id = get_random_string(length=5)
+    userObjS.is_active = True
+    userObjS.user_type = 1
+    userObjS.save()
+    
+    studentObj = Student()
+    studentObj.user_id = userObjS
+    studentObj.parent_id = parentObj
+    studentObj.fname = request.data['studentFName']
+    studentObj.lname = request.data['studentLName']
+    studentObj.contact = request.data['studentContact']
+    studentObj.save()
+
+    ccObj = Course_Class.objects.get(course_id = request.data['studCourse'], yearOfCourse = 1 )
+    ccObj.strength = ccObj.strength + 1
+    ccObj.save()
+    sicObj = Student_in_class()
+    sicObj.student_id = studentObj
+    sicObj.class_id = ccObj
+    sicObj.save()
+    return
+
+
+@checkAdmin
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes(())
+@renderer_classes((JSONRenderer,))
+@permission_classes(())
+def addStudent(request):
+    isParentExist = 0
+    isStudentExist = 0 
+    isStudentExist=School_user.objects.filter(user_name=request.data['studentEmail']).count()
+    isParentExist=School_user.objects.filter(user_name=request.data['parentEmail']).count()
+    if isParentExist==0:
+        userObjP = School_user()
+        userObjP.user_name = request.data['parentEmail']
+        userObjP.password = unique_id = get_random_string(length=5)
+        userObjP.is_active = True
+        userObjP.user_type = 2
+        userObjP.save()
+        
+        parentObj = Parent()
+        parentObj.user_id = userObjP
+        parentObj.fname = request.data['parentFName']
+        parentObj.lname = request.data['parentLName']
+        parentObj.contact = request.data['parentContact']
+        parentObj.save()
+
+        studReg(request,parentObj)
+
+    elif isStudentExist==0:
+        userObj = School_user.objects.get(user_name=request.data['parentEmail'])
+        parentObj = Parent.objects.get(user_id=userObj)
+        studReg(request,parentObj)
+
+    return Response({"Status":"Done"})

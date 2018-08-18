@@ -20,7 +20,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/', renderlogin),
     url(r'^dashboard/', login),
-    url(r'^createStudent/', createStudent),
     url(r'^logout/', logout_view),
     url(r'^add_entry_in_department/', add_entry_in_department ),
     url(r'^department_list_table/', department_list_table),
@@ -29,4 +28,8 @@ urlpatterns = [
     url(r'^add_entry_in_course/', add_entry_in_course),
     url(r'^sessionValues/',sessionValues),
     url(r'^course_list/', course_list),
+    url(r'^student_registration/',student_registration),
+    url(r'^addStudent/',addStudent),
+    url(r'^teacher_registration/',teacher_registration),
+    url(r'^addTeacher/',addTeacher),
 ]

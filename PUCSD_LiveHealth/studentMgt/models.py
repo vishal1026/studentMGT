@@ -55,7 +55,8 @@ class Course(models.Model):
 	course_id = models.AutoField(primary_key=True)
 	course_name = models.CharField(max_length=30,null=False, unique=True)
 	department_id = models.ForeignKey(Department, related_name = 'course')
- 
+	noOfYears = models.IntegerField(null=False)
+
 	class Meta:
 		db_table = 'course'
 
@@ -63,10 +64,11 @@ class Course_Class(models.Model):
 	class_id = models.AutoField(primary_key=True)
 	course_id = models.ForeignKey(Course, related_name = 'course')
 	teacher_id = models.ForeignKey(Teacher, null=False,  related_name = 'course_class')
-	strength = models.IntegerField(null=False)
+	strength = models.IntegerField(null=False, default=0)
+	yearOfCourse = models.IntegerField(null=False)
 
 	class Meta:
-		db_table = 'couse_class'
+		db_table = 'course_class'
 
 class Subject(models.Model):
 	subject_id = models.AutoField(primary_key=True)
@@ -79,7 +81,7 @@ class Subject(models.Model):
 
 class Student_in_class(models.Model):
 	student_class_id = models.AutoField(primary_key=True)
-	roll_no = models.IntegerField(null=False)
+	roll_no = models.IntegerField(null=False, default=1)
 	class_id = models.ForeignKey(Course_Class, related_name = 'student_in_class')
 	student_id = models.ForeignKey(Student, related_name = 'student_in_class')
 	
