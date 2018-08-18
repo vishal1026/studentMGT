@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^sessionValues/',sessionValues),
     url(r'^course_list/', course_list),
     url(r'^student_registration/',student_registration),
-    #url(r'^addStudent/',addStudent),
+    url(r'^addStudent/',addStudent),
     url(r'^teacher_registration/',teacher_registration),
     url(r'^addTeacher/',addTeacher),
 ]
