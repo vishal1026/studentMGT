@@ -49,7 +49,8 @@ $.ajax({
             console.log(msg);
             courseData=msg;
             genCourseTable(msg);
-            $('#myModal').hide();
+            studRegSelMenu();
+            
         }
     });
    
@@ -114,13 +115,15 @@ function genCourseTable(msg){
 function addCourse(){
 var courseName = document.getElementById('course').value;
 var deptID = document.getElementById('deptList').value;
+var courseYears = document.getElementById('courseYears').value;
 
 $.ajax({
     type:'POST',
         url:"http://localhost:8000/add_entry_in_course/ ",
         data:{
             'courseName' : courseName,
-            'deptID' : deptID
+            'deptID' : deptID,
+            'courseYears' : courseYears
         },
         success:function(deptList){
             console.log(deptList)
@@ -184,7 +187,23 @@ function addOption(elt,val){
 function deptSelMenu(){
     $('#deptList').empty();
     cnt = globalDepartmentData.length;
+    addOption("Select Course",0);
     for(var i = 0; i < cnt; i++ ){
         addOption(globalDepartmentData[i].name, globalDepartmentData[i].department_id);
+    }
+}
+
+
+function studCourseAddOp(elt,val){
+    var select = document.getElementById("studCourseList");
+    select.options[select.options.length] = new Option(elt,val,false, false);
+}
+
+function studRegSelMenu(){
+    $('#studCoursetList').empty();
+    cnt = courseData.length;
+    studCourseAddOp("Select Course",0);
+    for(var i = 0; i < cnt; i++ ){
+        studCourseAddOp(courseData[i].course_name, courseData[i].course_id);
     }
 }
