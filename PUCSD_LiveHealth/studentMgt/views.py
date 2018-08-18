@@ -23,6 +23,33 @@ def add_course(request):
     return Response(template_name='admin_add_course.html')
 
 
+@checkAdmin
+@csrf_exempt
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def add_entry_in_course(request):
+    courseObj = Course()
+    deptId = Department.objects.get(department_id = request.data['deptID'])
+    courseObj.course_name = request.data['courseName']
+    courseObj.department_id = deptId 
+    courseObj.save()
+    courseSer = courseSerializer(courseObj, many=False)
+    return Response(courseSer.data)
+
+
+@checkAdmin
+@csrf_exempt
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,))
+def course_list(request):
+    courseObj = Course.objects.all()
+    courseList = courseSerializer(courseObj, many=True)
+    print courseList.data
+    
+    return Response(courseList.data)    
+
+
+
 @api_view(['GET'])
 @authentication_classes(())
 @renderer_classes((TemplateHTMLRenderer,))
