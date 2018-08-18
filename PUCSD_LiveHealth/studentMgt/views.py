@@ -136,24 +136,43 @@ def logout(request):
         pass
     return HttpResponse("You're logged out.")
 
-@csrf_exempt
+@api_view(['POST'])
+def createParent(request):
+    print request
+    print "--------------------------------------"
+    data=Parent()
+    data.parent_id=request.data['parent_id']
+    data.fname=request.data['fname']
+    data.lname=request.data['lname']
+    data.contact=request.data['contact']
+    data.user_id_id=100
+    data.save()
+    return Response(request.data)
 
+@api_view(['POST'])
 def createStudent(request):
-    try:
-        studentId = request.POST["studentId"]
-        fname = request.POST["fname"] 
-        lname = request.POST["lname"]
-        contact = request.POST["contact"]
+    print request
+    print "--------------------------------------"
+    data=Student()
+    data.user_id_id=100
+    data.parent_id_id=200
+    data.fname=request.data['fname']
+    data.student_id=request.data['student_id']
+    data.lname=request.data['lname']
+    data.contact=request.data['contact']
+    data.save()
+    return Response(request.data)
 
-        studInstance = School_user.objects.get(user_id=int(studentId))
-        stud = Student()
-        stud.student_id = 1
-        stud.user_id = studInstance
-        stud.fname = fname
-        stud.lname = lname
-        stud.contact = contact
-        stud.save()
-        return HttpResponse("Pass")
+def createTeacher(request):
+    print request
+    print "--------------------------------------"
+    data=Teacher()
+    data.user_id_id=100
+    data.fname=request.data['fname']
+    data.teacher_id=request.data['teacher_id']
+    data.lname=request.data['lname']
+    data.contact=request.data['contact']
+    data.save()
+    return Response(request.data)
 
-    except:
-        return HttpResponse("Failed")   
+
