@@ -37,6 +37,19 @@ def add_entry_in_course(request):
     return Response(courseSer.data)
 
 
+@checkAdmin
+@csrf_exempt
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,))
+def course_list(request):
+    courseObj = Course.objects.all()
+    courseList = courseSerializer(courseObj, many=True)
+    print courseList.data
+    
+    return Response(courseList.data)    
+
+
+
 @api_view(['GET'])
 @authentication_classes(())
 @renderer_classes((TemplateHTMLRenderer,))
