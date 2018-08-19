@@ -17,6 +17,34 @@ from random import randint
 
 @checkAdmin
 @csrf_exempt
+@api_view(['POST'])
+@authentication_classes(())
+@renderer_classes((JSONRenderer,))
+@permission_classes(())
+def addExam(request):
+    examObj = Exam()
+    examObj.exam_name = request.data['examName']
+    examObj.date = request.data['examDate']
+    subObj=Subject.objects.get(subject_id=request.data['subject'])
+    examObj.subject_id = subObj
+    examObj.save()
+    examSer = examSerializer(examObj, many=False)
+    return Response(examSer.data)
+
+
+@checkAdmin
+@csrf_exempt
+@api_view(['GET'])
+@authentication_classes(())
+@renderer_classes((JSONRenderer,))
+@permission_classes(())
+def examSubjectList(request):
+    subObj = Subject.objects.all()
+    sSer = subjectSerializer(subObj, many=True)
+    return Response(sSer.data)
+
+@checkAdmin
+@csrf_exempt
 @api_view(['GET'])
 @authentication_classes(())
 @renderer_classes((TemplateHTMLRenderer,))

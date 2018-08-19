@@ -280,3 +280,48 @@ function addSubject(){
 }
 
 /* Exam Creation*/
+
+function subjectAddOp(elt,val){
+    var select = document.getElementById("examSubject");
+    select.options[select.options.length] = new Option(elt,val,false, false);
+}
+
+function subjectSelMenu(examSubjectList){
+    $('#examSubject').empty();
+    cnt = examSubjectList.length;
+    subjectAddOp("Select Subject",0);
+    for(var i = 0; i < cnt; i++ ){
+        subjectAddOp(examSubjectList[i].subject_name, examSubjectList[i].subject_id);
+    }
+}
+
+function getSubject(){
+$.ajax({
+    type:'GET',
+        url:"http://localhost:8000/examSubjectList/ ",
+        success:function(examSubjectList){
+            console.log(examSubjectList);
+            subjectSelMenu(examSubjectList);
+            
+        }
+    });
+}
+
+function addExam(){
+var examName = document.getElementById('examName').value;
+var examDate = document.getElementById('examDate').value;
+var subject = document.getElementById('examSubject').value;
+$.ajax({
+    type:'POST',
+        url:"http://localhost:8000/addExam/ ",
+        data:{
+            'examName' : examName,
+            'examDate' : examDate,
+            'subject' : subject
+        },
+        success:function(subjectEntry){
+            alert("Exam Added Successfully");
+            window.location.reload()
+        }
+});    
+}
