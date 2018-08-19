@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^department_list_table/', department_list_table),
     url(r'^render_add_department/', render_add_department),
     url(r'^add_course/', add_course),
+    url(r'^add_subject/', add_subject),
     url(r'^add_entry_in_course/', add_entry_in_course),
     url(r'^sessionValues/',sessionValues),
     url(r'^course_list/', course_list),
@@ -32,4 +33,7 @@ urlpatterns = [
     url(r'^addStudent/',addStudent),
     url(r'^teacher_registration/',teacher_registration),
     url(r'^addTeacher/',addTeacher),
+    url(r'^getCoursewiseClass/',getCoursewiseClass),
+    url(r'^addSubject/',addSubject),
+    url(r'^create_exam/',create_exam),
 ]

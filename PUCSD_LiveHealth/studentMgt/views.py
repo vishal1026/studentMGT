@@ -14,6 +14,58 @@ from django.contrib.auth import logout
 from serializers import *
 from random import randint
 
+
+@checkAdmin
+@csrf_exempt
+@api_view(['GET'])
+@authentication_classes(())
+@renderer_classes((TemplateHTMLRenderer,))
+@permission_classes(())
+def create_exam(request):
+    return Response(template_name='admin_create_exam.html')
+
+
+@checkAdmin
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes(())
+@renderer_classes((JSONRenderer,))
+@permission_classes(())
+def getCoursewiseClass(request):
+    courseClassObj = Course_Class.objects.filter(course_id = request.data['courseID'])
+    courseClassSer = course_ClassSerializer(courseClassObj, many=True)
+    print "Years-----------------------", courseClassSer.data
+    return Response(courseClassSer.data)
+
+@checkAdmin
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes(())
+@renderer_classes((JSONRenderer,))
+@permission_classes(())
+def addSubject(request):
+    courseClassObj = Course_Class.objects.get(class_id = request.data['currentYear'])
+    subjectObj = Subject()
+    subjectObj.class_id= courseClassObj
+    subjectObj.subject_name = request.data['subjectName']
+
+    cntTeachers= Teacher.objects.all().count()
+    teacherObjs = Teacher.objects.all()
+    j = randint(0,cntTeachers-1)
+    subjectObj.teacher_id = teacherObjs[j]
+    subjectObj.save()     
+    return Response('{ "status" : "done"}')
+
+@checkAdmin
+@csrf_exempt
+@api_view(['GET'])
+@authentication_classes(())
+@renderer_classes((TemplateHTMLRenderer,))
+@permission_classes(())
+def add_subject(request):
+    return Response(template_name='admin_add_subject.html')
+
+
 @checkAdmin
 @csrf_exempt
 @api_view(['GET'])
@@ -41,7 +93,7 @@ def add_entry_in_course(request):
     teacherObjs = Teacher.objects.all()
 
     for i in range(1,courseYears+1):
-        j = randint(1,cntTeachers-1)
+        j = randint(0,cntTeachers-1)
         ccObj = Course_Class()
         ccObj.course_id = courseObj
         ccObj.teacher_id = teacherObjs[j]

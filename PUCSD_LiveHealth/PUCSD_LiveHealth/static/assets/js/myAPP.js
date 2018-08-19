@@ -187,11 +187,12 @@ function addOption(elt,val){
 function deptSelMenu(){
     $('#deptList').empty();
     cnt = globalDepartmentData.length;
-    addOption("Select Course",0);
+    addOption("Select Department",0);
     for(var i = 0; i < cnt; i++ ){
         addOption(globalDepartmentData[i].name, globalDepartmentData[i].department_id);
     }
 }
+
 
 
 function studCourseAddOp(elt,val){
@@ -207,3 +208,75 @@ function studRegSelMenu(){
         studCourseAddOp(courseData[i].course_name, courseData[i].course_id);
     }
 }
+
+/* Admin Add Subject*/
+
+function subCourseAddOp(elt,val){
+    var select = document.getElementById("courseList");
+    select.options[select.options.length] = new Option(elt,val,false, false);
+}
+
+function addCourseSelMenu(){
+    $('#courseList').empty();
+    cnt = courseData.length;
+    subCourseAddOp("Select Course",0);
+    for(var i = 0; i < cnt; i++ ){
+        subCourseAddOp(courseData[i].course_name, courseData[i].course_id);
+    }
+}
+
+function yearOfCourseAddOp(elt,val){
+    var select = document.getElementById("courseYears");
+    select.options[select.options.length] = new Option(elt,val,false, false);
+}
+
+function addCourseClassSelMenu(classList){
+    $('#courseYears').empty();
+    cnt = classList.length;
+    yearOfCourseAddOp("Select Class",0);
+    for(var i = 0; i < cnt; i++ ){
+        yearOfCourseAddOp(classList[i].yearOfCourse, classList[i].class_id);
+    }
+}
+
+
+function courseSelMenu(){
+    $("#courseYears").hide();
+    addCourseSelMenu();   
+}
+
+function showCourseYear(){
+    $("#courseYears").show();
+    var courseID = document.getElementById('courseList').value;
+
+    $.ajax({
+        type:'POST',
+            url:"http://localhost:8000/getCoursewiseClass/ ",
+            data:{
+                'courseID' : courseID
+            },
+            success:function(classList){
+                console.log(classList);
+                addCourseClassSelMenu(classList);
+            }
+    });
+}
+
+function addSubject(){
+    var currentYear = document.getElementById('courseYears').value;
+    var subjectName = document.getElementById('subjectName').value;
+    $.ajax({
+        type:'POST',
+            url:"http://localhost:8000/addSubject/ ",
+            data:{
+                'currentYear' : currentYear,
+                'subjectName' : subjectName
+            },
+            success:function(subjectEntry){
+                alert("Subject Added Successfully");
+                window.location.reload()
+            }
+    });    
+}
+
+/* Exam Creation*/
