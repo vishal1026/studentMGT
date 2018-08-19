@@ -53,3 +53,10 @@ class student_in_classSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student_in_class
         fields = '__all__'
+
+class subjectSerializer(serializers.ModelSerializer):
+    class_id = course_ClassSerializer()
+    teacher_id = teacherSerializer()
+    class Meta:
+        model = Subject
+        fields = '__all__'
