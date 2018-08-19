@@ -36,4 +36,6 @@ urlpatterns = [
     url(r'^getCoursewiseClass/',getCoursewiseClass),
     url(r'^addSubject/',addSubject),
     url(r'^create_exam/',create_exam),
+    url(r'^examSubjectList/',examSubjectList),
+    url(r'^addExam/',addExam),    
 ]
