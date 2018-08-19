@@ -91,7 +91,7 @@ class Student_in_class(models.Model):
 class Exam(models.Model):
 	exam_id = models.AutoField(primary_key=True)
 	exam_name = models.CharField(null=False,max_length=20) 
-	date = models.DateTimeField(null=False)
+	date = models.DateField(null=False)
 	subject_id = models.ForeignKey(Subject, null=False, related_name = 'exam')
 
 	class Meta:

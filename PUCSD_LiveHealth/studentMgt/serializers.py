@@ -60,3 +60,22 @@ class subjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields = '__all__'
+
+class examSerializer(serializers.ModelSerializer):
+    subject_id = subjectSerializer()
+    class Meta:
+        model = Exam
+        fields = '__all__'
+
+class marksSerializer(serializers.ModelSerializer):
+    student_class_id = student_in_classSerializer()
+    class Meta:
+        model = Marks
+        fields = '__all__'
+
+class attendanceSerializer(serializers.ModelSerializer):
+    class_id = course_ClassSerializer
+
+    class Meta:
+        model = Attendance
+        fields = '__all__'
