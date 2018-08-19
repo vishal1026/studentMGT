@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Admin Dashboard</title>
+    <title>Add Course</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'assets/bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -41,7 +41,7 @@
 <body>
 
     <div id="wrapper">
-
+        <input type="hidden" id="user" value="{{ request.session.user_name}}">
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -71,29 +71,32 @@
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li class="sidebar-search">
+                            <li class="sidebar-search">
                             
-                            <!-- /input-group -->
-                        </li>
-                        <li class="active">
-                            <a href="#"> Dashboard </a>
-                        </li>
-                        <li>
-                            <a href="#"> Student Registration </a>
-                        </li>
-                        <li>
-                            <a href="#"> Teacher Registration </a>
-                        </li>
-                        <li>
-                            <a href="#"> Add  Department  </a>
-                        </li>
-                        <li>
-                            <a href="#"> Add Course </a>
-                        </li>
-                        <li>
-                            <a href="#"> Create Exam </a>
-                        </li>
-                    </ul>
+                                    <!-- /input-group -->
+                                </li>
+                                <li>
+                                    <a href="/dashboard/"> Dashboard </a>
+                                </li>
+                                <li>
+                                    <a href="/student_registration/"> Student Registration </a>
+                                </li>
+                                <li>
+                                    <a href="/teacher_registration/"> Teacher Registration </a>
+                                </li>
+                                <li>
+                                    <a href="/render_add_department/"> Add  Department  </a>
+                                </li>
+                                <li>
+                                    <a href="/add_course/"> Add Course </a>
+                                </li>
+                                <li>
+                                    <a href="/add_subject/"> Add Subject </a>
+                                </li>
+                                <li>
+                                    <a href="/create_exam/"> Create Exam </a>
+                                </li>
+                            </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
@@ -103,13 +106,65 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+                    <h1 class="page-header">Add Subject</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form action="addSubjectEntry" method="POST">
+                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addSubjectModal" onclick="courseSelMenu()" id="addCourseBtn">Add Subject</button>
+                    </form>
+                </div>
+                <div class="col-lg-12">
+                    <div class="panel-heading">
+                        <h4></h4>  
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="subject_display_table">
+
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
         </div>
     </div>
 
+    <!-- Modal Code -->
+    <div class="modal fade" id="addSubjectModal" role="dialog">
+            <div class="modal-dialog modal-md">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Subject Creation</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group ">
+                        <input type="text" name ="subjectName" id="subjectName" placeholder="Enter Subject Name" >
+                    </div>    
+                    <div class="form-group">
+                        <select class="form-control" onclick="showCourseYear()" id="courseList">
+                            <option value="0"> Select Course</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" id="courseYears">
+                            <option value="0">Select Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-left" id="addSubjectBtn" onclick="addSubject()" > Submit </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+        </div>
+        
     <!-- jQuery -->
     <script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 
@@ -124,6 +179,7 @@
     <script src="{% static 'assets/bower_components/morrisjs/morris.min.js' %}"></script>
     <script src="{% static 'assets/js/morris-data.js' %}"></script>
     <script src="{% static 'assets/js/myAPP.js' %}"></script>
+    <script src="{% static 'assets/js/adminCourse.js' %}"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'assets/dist/js/sb-admin-2.js' %}"></script>
