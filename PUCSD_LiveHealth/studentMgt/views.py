@@ -22,7 +22,6 @@ from serializers import *
 def add_course(request):
     return Response(template_name='admin_add_course.html')
 
-
 @checkAdmin
 @csrf_exempt
 @api_view(['POST'])
@@ -31,10 +30,24 @@ def add_entry_in_course(request):
     courseObj = Course()
     deptId = Department.objects.get(department_id = request.data['deptID'])
     courseObj.course_name = request.data['courseName']
-    courseObj.department_id = deptId 
+    courseObj.department_id = deptId
     courseObj.save()
     courseSer = courseSerializer(courseObj, many=False)
     return Response(courseSer.data)
+
+@checkClassTeacher
+@csrf_exempt
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def add_entry_in_attendance(request):
+    attObj = Attendance()
+    attObj.date = request.data['date']
+    attObj.attendance_data = request.data['attendance_data']
+    attObj.class_id = request.data['class_id']
+    attObj.save()
+    attendanceSer = attendanceSerializer(attObj, many=False)
+    return Response(attendanceSer.data)
+
 
 
 @checkAdmin
@@ -45,9 +58,18 @@ def course_list(request):
     courseObj = Course.objects.all()
     courseList = courseSerializer(courseObj, many=True)
     print courseList.data
-    
-    return Response(courseList.data)    
 
+    return Response(courseList.data)
+
+@checkClassTeacher
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,))
+def student_attendance_list(request):
+    stud_obj = Student.objects.all()
+    studentlist = studentSerializer(stud_obj, many=True)
+    print studentlist.data
+
+    return Response(studentlist.data)
 
 
 @api_view(['GET'])
@@ -72,6 +94,12 @@ def foo(request):
 @renderer_classes((TemplateHTMLRenderer,))
 def render_add_department(request):
     return Response(template_name='admin_add_department.html')
+
+@checkClassTeacher
+@api_view(['GET'])
+@renderer_classes((TemplateHTMLRenderer,))
+def render_add_attendance(request):
+    return Response(template_name='list_attendance.html')
 
 
 
@@ -109,7 +137,7 @@ def login(request):
     try:
         m = School_user.objects.get(user_name=request.POST['username'])
         if m.password == request.POST['password']:
-            #request.session.set_expiry(300) 
+            #request.session.set_expiry(300)
             request.session['user_id'] = m.user_id
             request.session['user_name'] = m.user_name
             request.session['user_type'] = m.user_type
@@ -144,7 +172,7 @@ def login(request):
                 request.session['teacher_lname'] = None
                 request.session['teacher_contact'] = None
                 return Response(template_name='parent_index.html')
-                     
+
             elif m.user_type==3: #teacher type
                 details = Teacher.objects.get(user_id=m.user_id)
                 request.session['stud_fname'] = None
@@ -173,11 +201,11 @@ def login(request):
                 request.session['teacher_id'] = details.teacher_id
                 request.session['teacher_fname'] = details.fname
                 request.session['teacher_lname'] = details.lname
-                request.session['teacher_contact'] = details.contact
+                request.session['teacher_contact'] = str(details.contact)
                 return Response(template_name='class_teacher_index.html')
 
             elif m.user_type==5: #admin type
-                
+
                 request.session['stud_fname'] = None
                 request.session['stud_lname'] = None
                 request.session['stud_contact'] = None
@@ -192,7 +220,7 @@ def login(request):
                 request.session['teacher_contact'] = None
                 return Response(template_name='admin_index.html')
 
-            
+
     except School_user.DoesNotExist:
         return Response(template_name='login.html')
 
@@ -210,7 +238,7 @@ def logout_view(request):
 def createStudent(request):
     try:
         studentId = request.POST["studentId"]
-        fname = request.POST["fname"] 
+        fname = request.POST["fname"]
         lname = request.POST["lname"]
         contact = request.POST["contact"]
 
@@ -225,4 +253,4 @@ def createStudent(request):
         return HttpResponse("Pass")
 
     except:
-        return HttpResponse("Failed")   
+        return HttpResponse("Failed")

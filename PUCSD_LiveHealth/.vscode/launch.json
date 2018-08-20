@@ -43,7 +43,7 @@
                 "runserver",
                 "--noreload",
                 "--nothreading",
-                "0.0.0.0:8000"
+                "localhost:8000"
             ],
             "debugOptions": [
                 "RedirectOutput",
