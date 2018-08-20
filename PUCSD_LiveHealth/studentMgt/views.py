@@ -104,6 +104,35 @@ def add_course(request):
     return Response(template_name='admin_add_course.html')
 
 
+@checkClassTeacher
+@csrf_exempt
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def add_entry_in_attendance(request):
+    attObj = Attendance()
+    attObj.date = request.data['date']
+    attObj.attendance_data = request.data['attendance_data']
+    attObj.class_id = request.data['class_id']
+    attObj.save()
+    attendanceSer = attendanceSerializer(attObj, many=False)
+    return Response(attendanceSer.data)
+
+@checkClassTeacher
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,))
+def student_attendance_list(request):
+    stud_obj = Student.objects.all()
+    studentlist = studentSerializer(stud_obj, many=True)
+    print studentlist.data
+    return Response(studentlist.data)
+    
+@checkClassTeacher
+@api_view(['GET'])
+@renderer_classes((TemplateHTMLRenderer,))
+def render_add_attendance(request):
+    return Response(template_name='list_attendance.html')
+
+
 @checkAdmin
 @csrf_exempt
 @api_view(['POST'])
@@ -252,7 +281,7 @@ def login(request):
                 request.session['teacher_id'] = details.teacher_id
                 request.session['teacher_fname'] = details.fname
                 request.session['teacher_lname'] = details.lname
-                request.session['teacher_contact'] = details.contact
+                request.session['teacher_contact'] = str(details.contact)
                 return Response(template_name='teacher_index.html')
             elif m.user_type==4: #class teacher type
                 details = Teacher.objects.get(user_id=m.user_id)
@@ -267,7 +296,7 @@ def login(request):
                 request.session['teacher_id'] = details.teacher_id
                 request.session['teacher_fname'] = details.fname
                 request.session['teacher_lname'] = details.lname
-                request.session['teacher_contact'] = details.contact
+                request.session['teacher_contact'] =str( details.contact)
                 return Response(template_name='class_teacher_index.html')
 
             elif m.user_type==5: #admin type
@@ -329,7 +358,7 @@ def addTeacher(request):
         teacherUser.user_id = userObj
         teacherUser.fname = request.data['teacherFName']
         teacherUser.lname = request.data['teacherLName']        
-        teacherUser.contact = request.data['teacherContact']
+        teacherUser.contact = str(request.data['teacherContact'])
         teacherUser.save()
     return Response({"Status":"Done"})
 
@@ -392,7 +421,7 @@ def addStudent(request):
         parentObj.user_id = userObjP
         parentObj.fname = request.data['parentFName']
         parentObj.lname = request.data['parentLName']
-        parentObj.contact = request.data['parentContact']
+        parentObj.contact = str(request.data['parentContact'])
         parentObj.save()
 
         studReg(request,parentObj)
@@ -401,5 +430,27 @@ def addStudent(request):
         userObj = School_user.objects.get(user_name=request.data['parentEmail'])
         parentObj = Parent.objects.get(user_id=userObj)
         studReg(request,parentObj)
+        return Response({"Status":"Done"})
 
-    return Response({"Status":"Done"})
+'''Student Profile Rendering'''
+@checkStudent
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,))
+def view_marks(request):
+    studInClass = Student_in_class.objects.get(student_id=request.session['stud_id'])
+    # studInClass = details.student_class_id
+    # print studentc_id
+    isPresent=0
+    isPresent=Marks.objects.filter(student_class_id_id=studInClass).count()
+    if isPresent>=1:
+        obj = Marks.objects.filter(student_class_id=studInClass)
+        print "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&",obj       
+        # print obj.marks_obtained
+        # print obj.marks_out_of
+        # print obj.exam_id
+        # print obj
+        objSer = marksSerializer(obj, many = True) 
+        return Response(objSer.data)
+
+
+
