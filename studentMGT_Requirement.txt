@@ -1,9 +1,9 @@
 astroid==1.6.5
 backports.functools-lru-cache==1.5
 configparser==3.5.0
-Django==1.11.14
+Django==1.11.23
 django-filter==2.0.0
-djangorestframework==3.8.2
+djangorestframework==3.9.1
 djangorestframework-jwt==1.11.0
 enum34==1.1.6
 futures==3.2.0
